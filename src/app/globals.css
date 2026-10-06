@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* The Quest brand tokens — from the Brand Book. Single gold accent, no extra neons. */
+@theme {
+  --color-ink: #0b0b12; /* שחור-אינדיגו — background */
+  --color-ink-deep: #08080d;
+  --color-card: #15151e;
+  --color-card-raised: #1e1e28;
+  --color-line: #22222d;
+  --color-line-strong: #2d2d38;
+  --color-amber: #d9a441; /* זהב-ענבר — the one accent */
+  --color-amber-dim: #8a6a2f;
+  --color-cream: #f2f1ec; /* קרם — primary text */
+  --color-body: #c9c6c0;
+  --color-muted: #8a8890; /* אפור מושתק */
+  --color-success: #5fae6c;
+  --color-danger: #c9655a;
+
+  --font-display: var(--font-poppins), var(--font-rubik), sans-serif;
+  --font-hebrew: var(--font-rubik), sans-serif;
+  --font-sans: var(--font-poppins), var(--font-rubik), system-ui, sans-serif;
+
+  --animate-fade-up: fade-up 0.6s ease both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-chevron: chevron-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@keyframes chevron-pulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  min-height: 100svh;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Hebrew headings: Rubik Black. Latin display/numbers: Poppins ExtraBold.
+   In the base layer so utilities like `font-display` can override it. */
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-hebrew);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 2px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #15151e 0%, #1e1e28 50%, #15151e 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+  border-radius: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
