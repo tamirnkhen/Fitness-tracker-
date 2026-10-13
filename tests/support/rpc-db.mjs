@@ -44,8 +44,7 @@ async function pgliteAdapter() {
     kind: 'pglite',
     exec: (sql) => serial(() => db.exec(sql)),
     query: (sql, params) => serial(() => db.query(sql, params)),
-    tx: (fn) =>
-      serial(() => db.transaction(async (t) => fn({ query: (s, p) => t.query(s, p), exec: (s) => t.exec(s) }))),
+    tx: (fn) => serial(() => db.transaction(async (t) => fn({ query: (s, p) => t.query(s, p), exec: (s) => t.exec(s) }))),
     close: () => db.close(),
   };
 }
@@ -139,5 +138,8 @@ export async function createDb({ url = process.env.PG_URL, install = true } = {}
 
 function parseArr(s) {
   if (s == null) return [];
-  return String(s).replace(/^\{|\}$/g, '').split(',').map((x) => x.replace(/^"|"$/g, ''));
+  return String(s)
+    .replace(/^\{|\}$/g, '')
+    .split(',')
+    .map((x) => x.replace(/^"|"$/g, ''));
 }

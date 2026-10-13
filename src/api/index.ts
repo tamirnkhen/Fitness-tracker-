@@ -22,11 +22,12 @@ export const api = {
       30000,
     ) as R<{ saved_at: number; state?: unknown; imgs?: Imgs | null; img_v?: number }>,
   consent: (token: string, ver: number) => rpc('q_consent', { p_token: token, p_ver: ver }),
-  changePin: (token: string, oldPin: string, newPin: string) =>
-    rpc('q_change_pin', { p_token: token, p_old: oldPin, p_new: newPin }),
+  changePin: (token: string, oldPin: string, newPin: string) => rpc('q_change_pin', { p_token: token, p_old: oldPin, p_new: newPin }),
   deleteAccount: (token: string, pin: string) => rpc('q_delete', { p_token: token, p_pin: pin }),
-  partyCreate: (token: string, name: string) => rpc('q_party_create', { p_token: token, p_name: name }) as R<{ code: string; parties: PartyInfo[] }>,
-  partyJoin: (token: string, code: string) => rpc('q_party_join', { p_token: token, p_code: code }) as R<{ code: string; parties: PartyInfo[] }>,
+  partyCreate: (token: string, name: string) =>
+    rpc('q_party_create', { p_token: token, p_name: name }) as R<{ code: string; parties: PartyInfo[] }>,
+  partyJoin: (token: string, code: string) =>
+    rpc('q_party_join', { p_token: token, p_code: code }) as R<{ code: string; parties: PartyInfo[] }>,
   partyLeave: (token: string, code: string) => rpc('q_party_leave', { p_token: token, p_code: code }) as R<{ parties: PartyInfo[] }>,
   party: (token: string, code: string) => rpc('q_party', { p_token: token, p_code: code }) as R<PartyBoard>,
   admin: (key: string) => rpc('q_admin', { p_key: key }),

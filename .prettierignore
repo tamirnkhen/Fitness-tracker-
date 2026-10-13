@@ -1,0 +1,9 @@
+dist
+node_modules
+public
+deliverables
+package-lock.json
+assets
+tests/fixtures
+supabase
+*.md

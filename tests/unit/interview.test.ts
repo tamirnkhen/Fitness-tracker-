@@ -97,7 +97,14 @@ describe('interview', () => {
     expect(t.iv.name).toBe('דנה');
   });
   it('asks a follow-up when it cannot tell the realm or struggle', () => {
-    const { all } = run([{ text: 'אלון' }, { text: 'בלה בלה' }, { chips: ['career'] }, { text: 'קשה להסביר' }, { chips: ['fear'] }, { chips: ['40'] }]);
+    const { all } = run([
+      { text: 'אלון' },
+      { text: 'בלה בלה' },
+      { chips: ['career'] },
+      { text: 'קשה להסביר' },
+      { chips: ['fear'] },
+      { chips: ['40'] },
+    ]);
     expect(all[2]!.iv.step).toBe('goalRealm');
     expect(all[3]!.iv.focus).toEqual(['career']);
     expect(all[4]!.iv.step).toBe('blockPick');

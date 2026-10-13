@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { newState, normalizeState } from '../../src/game/state';
 import { genDay, questCount, CREATOR_MIN_LEVEL } from '../../src/game/day';
-import { rollover, completeQuest, progressQuest, easeQuest, addXp, newBoss, streakMultiplier, setTitle, unlockedTitles } from '../../src/game/engine';
+import {
+  rollover,
+  completeQuest,
+  progressQuest,
+  easeQuest,
+  addXp,
+  newBoss,
+  streakMultiplier,
+  setTitle,
+  unlockedTitles,
+} from '../../src/game/engine';
 import { levelInfo, xpForLevel, xpToNext, levelOf } from '../../src/game/level';
 import { backdropFor, BACKDROPS } from '../../src/game/backdrop';
 import { addDays, daysBetween, dayKey } from '../../src/game/dates';
@@ -35,7 +45,9 @@ const doAll = (s: GameState, now = 2) => {
 describe('content integrity', () => {
   it('has unique ids everywhere', () => {
     const ids = [
-      ...Object.values(TRACKS).flat(2).map((q) => q.id),
+      ...Object.values(TRACKS)
+        .flat(2)
+        .map((q) => q.id),
       ...QB.map((q) => q.id),
       ...WILD.map((q) => q.id),
       ...MICRO.map((q) => q.id),
@@ -88,8 +100,18 @@ describe('level curve', () => {
 
 describe('backdropFor', () => {
   const cases: [number, string][] = [
-    [1, 'blue'], [9, 'blue'], [10, 'deepblue'], [19, 'deepblue'], [20, 'purple'], [29, 'purple'],
-    [30, 'deeppurple'], [39, 'deeppurple'], [40, 'bordeaux'], [49, 'bordeaux'], [50, 'darkbordeaux'], [99, 'darkbordeaux'],
+    [1, 'blue'],
+    [9, 'blue'],
+    [10, 'deepblue'],
+    [19, 'deepblue'],
+    [20, 'purple'],
+    [29, 'purple'],
+    [30, 'deeppurple'],
+    [39, 'deeppurple'],
+    [40, 'bordeaux'],
+    [49, 'bordeaux'],
+    [50, 'darkbordeaux'],
+    [99, 'darkbordeaux'],
   ];
   for (const [lvl, id] of cases) it(`level ${lvl} → ${id}`, () => expect(backdropFor(lvl).id).toBe(id));
   it('is safe on bad input', () => {
@@ -127,7 +149,13 @@ describe('genDay', () => {
     const a = genDay(s, '2026-03-11');
     const b = genDay(s, '2026-03-11');
     expect(a).toEqual(b);
-    const days = new Set(Array.from({ length: 10 }, (_, i) => genDay(s, addDays(D, i)).quests.map((q) => q.tpl).join()));
+    const days = new Set(
+      Array.from({ length: 10 }, (_, i) =>
+        genDay(s, addDays(D, i))
+          .quests.map((q) => q.tpl)
+          .join(),
+      ),
+    );
     expect(days.size).toBeGreaterThan(5);
   });
   it('builds one track quest per focus realm and the right count', () => {
@@ -137,7 +165,12 @@ describe('genDay', () => {
         const d = genDay(s, addDays(D, i));
         const core = d.quests.filter((q) => q.source !== 'wild' && q.source !== 'creator');
         expect(core.length).toBe(Math.max(questCount(minutes), 3));
-        expect(d.quests.filter((q) => q.source === 'track').map((q) => q.realm).sort()).toEqual(['body', 'career', 'mind']);
+        expect(
+          d.quests
+            .filter((q) => q.source === 'track')
+            .map((q) => q.realm)
+            .sort(),
+        ).toEqual(['body', 'career', 'mind']);
         expect(new Set(d.quests.map((q) => q.tpl)).size).toBe(d.quests.length);
         expect(new Set(d.quests.map((q) => q.id)).size).toBe(d.quests.length);
       }
@@ -167,7 +200,9 @@ describe('genDay', () => {
   });
   it('wild cards show up sometimes', () => {
     const s = start();
-    const n = Array.from({ length: 100 }, (_, i) => genDay(s, addDays(D, i))).filter((d) => d.quests.some((q) => q.source === 'wild')).length;
+    const n = Array.from({ length: 100 }, (_, i) => genDay(s, addDays(D, i))).filter((d) =>
+      d.quests.some((q) => q.source === 'wild'),
+    ).length;
     expect(n).toBeGreaterThan(10);
     expect(n).toBeLessThan(60);
   });

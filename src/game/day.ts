@@ -68,8 +68,14 @@ export function genDay(s: GameState, key: DayKey, opts: { returning?: boolean } 
       add(trackTemplate(r, tier, Math.floor(rnd() * 10)), 'track', tier);
     }
     // 2. side quests: mostly focus realms, one from elsewhere for variety
-    const sidePool = shuffle(rnd, QB.filter((q) => focus.includes(q.realm) && (q.minLevel ?? 0) <= level));
-    const otherPool = shuffle(rnd, QB.filter((q) => others.includes(q.realm)));
+    const sidePool = shuffle(
+      rnd,
+      QB.filter((q) => focus.includes(q.realm) && (q.minLevel ?? 0) <= level),
+    );
+    const otherPool = shuffle(
+      rnd,
+      QB.filter((q) => others.includes(q.realm)),
+    );
     if (quests.length < total && otherPool.length) add(otherPool[0]!, 'side');
     for (const t of sidePool) {
       if (quests.length >= total) break;
@@ -77,7 +83,10 @@ export function genDay(s: GameState, key: DayKey, opts: { returning?: boolean } 
     }
     // 3. make sure the boss can be hit on its weak point
     if (boss && !quests.some((q) => boss.weak.includes(q.realm))) {
-      const weakPool = shuffle(rnd, QB.filter((q) => boss.weak.includes(q.realm) && !used.has(q.id)));
+      const weakPool = shuffle(
+        rnd,
+        QB.filter((q) => boss.weak.includes(q.realm) && !used.has(q.id)),
+      );
       if (weakPool[0]) {
         if (quests.length >= total) {
           const idx = quests.map((q) => q.source).lastIndexOf('side');

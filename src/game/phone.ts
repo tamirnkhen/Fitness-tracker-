@@ -14,7 +14,23 @@ export function formatPhone(input: string): string {
   return `${local.slice(0, 3)}-${local.slice(3, 6)}-${local.slice(6)}`;
 }
 
-const WEAK = new Set(['1234', '4321', '0123', '3210', '1212', '2121', '2580', '0852', '1122', '6969', '1010', '2000', '1984', '2468', '1357']);
+const WEAK = new Set([
+  '1234',
+  '4321',
+  '0123',
+  '3210',
+  '1212',
+  '2121',
+  '2580',
+  '0852',
+  '1122',
+  '6969',
+  '1010',
+  '2000',
+  '1984',
+  '2468',
+  '1357',
+]);
 
 /** Mirrors q__weak_pin in SQL. */
 export function isWeakPin(p: string): boolean {

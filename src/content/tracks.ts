@@ -142,7 +142,14 @@ export const TRACKS: Record<RealmId, QuestTemplate[][]> = {
   ]),
   adventure: t('adventure', [
     [
-      { id: 'a0a', kind: 'text', title: 'לצאת החוצה ל-10 דקות ולמצוא 3 דברים שלא שמת לב אליהם', xp: 15, prompt: 'מה ראיתי…', journal: true },
+      {
+        id: 'a0a',
+        kind: 'text',
+        title: 'לצאת החוצה ל-10 דקות ולמצוא 3 דברים שלא שמת לב אליהם',
+        xp: 15,
+        prompt: 'מה ראיתי…',
+        journal: true,
+      },
       { id: 'a0b', kind: 'check', title: 'לשמוע שיר או אלבום שלא הכרת', xp: 15 },
     ],
     [

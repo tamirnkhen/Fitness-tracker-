@@ -104,7 +104,13 @@ export function checkUnlocks(s: GameState, events: GameEvent[], now: number, ext
     }
   }
   const st = stats(s, extra);
-  const known = new Set(s.ach ? Object.keys(s.ach).filter((k) => k.startsWith('title:')).map((k) => k.slice(6)) : []);
+  const known = new Set(
+    s.ach
+      ? Object.keys(s.ach)
+          .filter((k) => k.startsWith('title:'))
+          .map((k) => k.slice(6))
+      : [],
+  );
   for (const t of TITLES) {
     if (t.id === 'wanderer' || known.has(t.id)) continue;
     if (t.test(st)) {
@@ -138,12 +144,7 @@ export function progressQuest(state: GameState, id: string, delta: number, now =
  * XP (with streak bonus), realm XP, boss damage, streak, perfect day,
  * achievements and titles.
  */
-export function completeQuest(
-  state: GameState,
-  id: string,
-  payload: { text?: string } = {},
-  now = Date.now(),
-): Result {
+export function completeQuest(state: GameState, id: string, payload: { text?: string } = {}, now = Date.now()): Result {
   const s = clone(state);
   const events: GameEvent[] = [];
   const q = findQuest(s, id);

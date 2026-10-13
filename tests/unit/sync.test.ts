@@ -8,17 +8,31 @@ import type { Imgs } from '../../src/api/types';
 
 function mem(): KV {
   const m = new Map<string, unknown>();
-  return { kind: 'memory', get: async (k) => m.get(k) as never, set: async (k, v) => void m.set(k, v), del: async (k) => void m.delete(k), clear: async () => m.clear() };
+  return {
+    kind: 'memory',
+    get: async (k) => m.get(k) as never,
+    set: async (k, v) => void m.set(k, v),
+    del: async (k) => void m.delete(k),
+    clear: async () => m.clear(),
+  };
 }
 
 /** A fake server with the same rules as q_save / q_load. */
 function fakeServer() {
-  const srv = { state: {} as unknown, saved_at: 0, imgs: null as Imgs | null, img_v: 0, calls: [] as { fn: string; args: unknown[] }[], online: true };
+  const srv = {
+    state: {} as unknown,
+    saved_at: 0,
+    imgs: null as Imgs | null,
+    img_v: 0,
+    calls: [] as { fn: string; args: unknown[] }[],
+    online: true,
+  };
   const api: SyncApi = {
     async save(_t, base, state, _pub, imgs, imgV) {
       srv.calls.push({ fn: 'save', args: [base, imgs, imgV] });
       if (!srv.online) return { ok: false, err: 'network' };
-      if (base !== srv.saved_at) return { ok: false, err: 'conflict', state: srv.state, saved_at: srv.saved_at, img_v: srv.img_v, imgs: srv.imgs };
+      if (base !== srv.saved_at)
+        return { ok: false, err: 'conflict', state: srv.state, saved_at: srv.saved_at, img_v: srv.img_v, imgs: srv.imgs };
       srv.state = JSON.parse(JSON.stringify(state));
       srv.saved_at += 10;
       if (imgV !== undefined) {
@@ -30,7 +44,17 @@ function fakeServer() {
     async load() {
       srv.calls.push({ fn: 'load', args: [] });
       if (!srv.online) return { ok: false, err: 'network' };
-      return { ok: true, state: srv.state, saved_at: srv.saved_at, imgs: srv.imgs, img_v: srv.img_v, consent_ver: 1, terms_ver: 1, parties: [], user: { name: 'x' } };
+      return {
+        ok: true,
+        state: srv.state,
+        saved_at: srv.saved_at,
+        imgs: srv.imgs,
+        img_v: srv.img_v,
+        consent_ver: 1,
+        terms_ver: 1,
+        parties: [],
+        user: { name: 'x' },
+      };
     },
   };
   return { srv, api };

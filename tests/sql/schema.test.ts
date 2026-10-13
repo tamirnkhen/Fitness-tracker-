@@ -7,7 +7,15 @@ type Db = Awaited<ReturnType<typeof createDb>>;
 let db: Db;
 let n = 0;
 const phone = () => `05${String(20000000 + ++n * 7919).padStart(8, '0')}`;
-const COL: Record<string, string> = { q_config: 'v', q_users: 'created_at', q_auth: 'fails', q_sessions: 'created_at', q_parties: 'created_at', q_members: 'joined_at', q_rate: 'n' };
+const COL: Record<string, string> = {
+  q_config: 'v',
+  q_users: 'created_at',
+  q_auth: 'fails',
+  q_sessions: 'created_at',
+  q_parties: 'created_at',
+  q_members: 'joined_at',
+  q_rate: 'n',
+};
 const TABLES = ['q_config', 'q_users', 'q_auth', 'q_sessions', 'q_parties', 'q_members', 'q_rate'];
 
 async function register(over: Record<string, unknown> = {}) {
@@ -244,15 +252,42 @@ describe('save', () => {
     const big = { x: 'a'.repeat(270000) };
     expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: big, p_pub: pub() })).err).toBe('too_big');
     const img = 'data:image/png;base64,' + 'A'.repeat(720000);
-    expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { cut: img }, p_img_v: 1 })).err).toBe('bad_imgs');
+    expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { cut: img }, p_img_v: 1 })).err).toBe(
+      'bad_imgs',
+    );
   });
   it('validates images', async () => {
     const r = await register();
-    for (const cut of ['javascript:alert(1)', 'data:image/svg+xml;base64,AAAA', 'data:text/html;base64,AAAA', 'data:image/png;base64,AA"><script>']) {
-      expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { cut }, p_img_v: 1 })).err).toBe('bad_imgs');
+    for (const cut of [
+      'javascript:alert(1)',
+      'data:image/svg+xml;base64,AAAA',
+      'data:text/html;base64,AAAA',
+      'data:image/png;base64,AA"><script>',
+    ]) {
+      expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { cut }, p_img_v: 1 })).err).toBe(
+        'bad_imgs',
+      );
     }
-    expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { original: 'data:image/png;base64,AAAA' }, p_img_v: 1 })).err).toBe('bad_imgs');
-    const ok = await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub(), p_imgs: { cut: 'data:image/png;base64,AAAA', thumb: 'data:image/jpeg;base64,AAAA', frame: { v: 2 } }, p_img_v: 1 });
+    expect(
+      (
+        await db.rpc('q_save', {
+          p_token: r.token,
+          p_base: 0,
+          p_state: {},
+          p_pub: pub(),
+          p_imgs: { original: 'data:image/png;base64,AAAA' },
+          p_img_v: 1,
+        })
+      ).err,
+    ).toBe('bad_imgs');
+    const ok = await db.rpc('q_save', {
+      p_token: r.token,
+      p_base: 0,
+      p_state: {},
+      p_pub: pub(),
+      p_imgs: { cut: 'data:image/png;base64,AAAA', thumb: 'data:image/jpeg;base64,AAAA', frame: { v: 2 } },
+      p_img_v: 1,
+    });
     expect(ok.ok).toBe(true);
     // a save without p_img_v keeps the images
     const ok2 = await db.rpc('q_save', { p_token: r.token, p_base: ok.saved_at, p_state: { b: 1 }, p_pub: pub() });
@@ -276,9 +311,16 @@ describe('save', () => {
       pub({ thumb: 'data:image/png;base64,' + 'A'.repeat(33000) }),
     ];
     for (const p of bad) {
-      expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: p })).err, JSON.stringify(p).slice(0, 80)).toBe('bad_pub');
+      expect((await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: p })).err, JSON.stringify(p).slice(0, 80)).toBe(
+        'bad_pub',
+      );
     }
-    const ok = await db.rpc('q_save', { p_token: r.token, p_base: 0, p_state: {}, p_pub: pub({ name: '<b>x</b>', extra: 'dropped', phone: '0501234567' }) });
+    const ok = await db.rpc('q_save', {
+      p_token: r.token,
+      p_base: 0,
+      p_state: {},
+      p_pub: pub({ name: '<b>x</b>', extra: 'dropped', phone: '0501234567' }),
+    });
     expect(ok.ok).toBe(true);
     const row = (await db.query(`select pub from q_users where id = (select user_id from q_sessions limit 1 offset 0)`)).rows;
     expect(row).toBeTruthy();

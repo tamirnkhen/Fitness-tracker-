@@ -39,9 +39,13 @@ export function isSecretKey(key: string): boolean {
 
 /** Reads /config.js (runtime, not build-time). Never throws. */
 export function readConfig(raw: Partial<QuestConfig> | undefined = globalThis.window?.QUEST_CONFIG): ConfigState {
-  const url = String(raw?.SUPABASE_URL ?? '').trim().replace(/\/+$/, '');
+  const url = String(raw?.SUPABASE_URL ?? '')
+    .trim()
+    .replace(/\/+$/, '');
   const key = String(raw?.SUPABASE_KEY ?? '').trim();
-  const contact = String(raw?.CONTACT ?? '').trim().slice(0, 120);
+  const contact = String(raw?.CONTACT ?? '')
+    .trim()
+    .slice(0, 120);
   const base = { url, key, contact };
   if (!url || !key) return { ok: false, problem: 'missing', ...base };
   if (isSecretKey(key)) return { ok: false, problem: 'secret_key', ...base, key: '' };

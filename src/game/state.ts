@@ -4,8 +4,7 @@ import { MAX_TIER } from '../content/tracks';
 
 export const STATE_VERSION = 2;
 
-const zeroRealms = (): Record<RealmId, number> =>
-  Object.fromEntries(REALM_IDS.map((r) => [r, 0])) as Record<RealmId, number>;
+const zeroRealms = (): Record<RealmId, number> => Object.fromEntries(REALM_IDS.map((r) => [r, 0])) as Record<RealmId, number>;
 
 export function newSeed(): string {
   const b = new Uint8Array(8);
@@ -48,12 +47,10 @@ export function newState(seed: string = newSeed(), now: number = Date.now()): Ga
   };
 }
 
-const num = (v: unknown, d = 0, min = 0, max = 1e9) =>
-  typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : d;
+const num = (v: unknown, d = 0, min = 0, max = 1e9) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : d);
 const str = (v: unknown, d = '', maxLen = 2000) => (typeof v === 'string' ? v.slice(0, maxLen) : d);
 const isRealm = (v: unknown): v is RealmId => typeof v === 'string' && (REALM_IDS as readonly string[]).includes(v);
-const isStruggle = (v: unknown): v is StruggleId =>
-  typeof v === 'string' && (STRUGGLE_IDS as readonly string[]).includes(v);
+const isStruggle = (v: unknown): v is StruggleId => typeof v === 'string' && (STRUGGLE_IDS as readonly string[]).includes(v);
 const obj = (v: unknown): Record<string, unknown> =>
   v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
 
@@ -61,9 +58,7 @@ function cleanQuest(q: unknown): Quest | null {
   const o = obj(q);
   if (typeof o.id !== 'string' || !isRealm(o.realm)) return null;
   const kind = o.kind === 'text' || o.kind === 'count' ? o.kind : 'check';
-  const source = ['track', 'side', 'wild', 'creator', 'micro'].includes(o.source as string)
-    ? (o.source as Quest['source'])
-    : 'side';
+  const source = ['track', 'side', 'wild', 'creator', 'micro'].includes(o.source as string) ? (o.source as Quest['source']) : 'side';
   const out: Quest = {
     id: o.id,
     tpl: str(o.tpl, o.id),
@@ -153,7 +148,12 @@ export function normalizeState(raw: unknown): GameState {
     ? r.journal
         .map((j) => obj(j))
         .filter((j) => isDayKey(j.day) && typeof j.text === 'string')
-        .map((j) => ({ day: j.day as string, text: str(j.text, '', 2000), at: num(j.at, 0, 0, 1e15), ...(typeof j.q === 'string' ? { q: str(j.q, '', 200) } : {}) }))
+        .map((j) => ({
+          day: j.day as string,
+          text: str(j.text, '', 2000),
+          at: num(j.at, 0, 0, 1e15),
+          ...(typeof j.q === 'string' ? { q: str(j.q, '', 200) } : {}),
+        }))
         .slice(-500)
     : [];
   const c = obj(r.counters);
@@ -180,7 +180,8 @@ export function normalizeState(raw: unknown): GameState {
       : null,
   };
   const ch = obj(r.char);
-  s.char = typeof ch.imgV === 'number' ? { imgV: num(ch.imgV, 0, 0, 1e9), legacy: ch.legacy === true, style: num(ch.style, 1, 0, 100) } : null;
+  s.char =
+    typeof ch.imgV === 'number' ? { imgV: num(ch.imgV, 0, 0, 1e9), legacy: ch.legacy === true, style: num(ch.style, 1, 0, 100) } : null;
   s.seenBroadcast = str(r.seenBroadcast, '', 64);
   return s;
 }

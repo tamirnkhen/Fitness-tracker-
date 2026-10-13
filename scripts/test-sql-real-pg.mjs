@@ -26,9 +26,23 @@ const run = (cmd, args) => (asUser.length ? execFileSync(asUser[0], [...asUser.s
 
 run(path.join(bin, 'initdb'), ['-D', data, '-U', 'postgres', '-A', 'trust', '--no-sync', '-E', 'UTF8', '--locale=C.UTF-8']);
 const port = 55432;
-const pg = spawn(asUser.length ? asUser[0] : path.join(bin, 'postgres'),
-  [...(asUser.length ? [...asUser.slice(1), path.join(bin, 'postgres')] : []), '-D', data, '-k', dir, '-p', String(port), '-c', 'listen_addresses=', '-c', 'fsync=off'],
-  { stdio: 'inherit' });
+const pg = spawn(
+  asUser.length ? asUser[0] : path.join(bin, 'postgres'),
+  [
+    ...(asUser.length ? [...asUser.slice(1), path.join(bin, 'postgres')] : []),
+    '-D',
+    data,
+    '-k',
+    dir,
+    '-p',
+    String(port),
+    '-c',
+    'listen_addresses=',
+    '-c',
+    'fsync=off',
+  ],
+  { stdio: 'inherit' },
+);
 
 let code = 1;
 try {

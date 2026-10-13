@@ -118,7 +118,7 @@ export function startInterview(accountName?: string): Turn {
   return {
     iv,
     msgs: [
-      { text: 'ברוכים הבאים לממלכה. אני ה-Quest Master.' },
+      { text: 'ברוכים הבאים לממלכה. כאן ה-Quest Master, המדריך שלך במסע.' },
       { text: 'מהיום, החיים שלך הם המשחק: משימות אמיתיות, XP אמיתי, ובוסים שהם ההרגלים שעוצרים אותך.' },
       { text: 'קודם כל, איך יקראו לגיבור שלך?' },
     ],
@@ -179,7 +179,13 @@ export function answerInterview(iv0: Interview, ans: Answer, accountName?: strin
         iv.step = 'goalRealm';
         return {
           iv,
-          msgs: [{ text: text ? 'הבנתי. כדי לדייק את המסע: לאיזה תחום זה הכי קשור? אפשר לבחור עד שלושה.' : 'צריך לפחות תחום אחד. אפשר לבחור או לכתוב במילים שלך.' }],
+          msgs: [
+            {
+              text: text
+                ? 'הבנתי. כדי לדייק את המסע: לאיזה תחום זה הכי קשור? אפשר לבחור עד שלושה.'
+                : 'צריך לפחות תחום אחד. אפשר לבחור או לכתוב במילים שלך.',
+            },
+          ],
           prompt: { input: 'both', chips: realmChips(), multi: true, placeholder: 'או לכתוב במילים שלך', maxLen: 400 },
         };
       }
@@ -229,7 +235,7 @@ export function answerInterview(iv0: Interview, ans: Answer, accountName?: strin
       };
     }
     case 'time': {
-      const c = chips[0] ?? (text.match(/\d+/)?.[0] ?? '');
+      const c = chips[0] ?? text.match(/\d+/)?.[0] ?? '';
       const n = Number(c);
       iv.minutes = n >= 40 ? 40 : n > 0 && n <= 10 ? 10 : n > 0 ? 20 : (iv.suggestedMinutes ?? 20);
       iv.step = 'done';
@@ -261,8 +267,14 @@ export function summary(iv: Interview): BotMsg[] {
   const msgs: BotMsg[] = [
     { text: `הנה המפה שלך, ${iv.name}:`, tone: 'summary' },
     { text: `תחומי המסע: ${list(names)}.`, tone: 'summary' },
-    { text: `הבוס הראשון: ${boss.name}. נקודות התורפה שלו: ${list(boss.weak.map((r) => REALMS[r].name))}. כל משימה בתחומים האלה פוגעת בו כפול.`, tone: 'summary' },
-    { text: `בכל יום יחכו לך ${n} משימות, בערך ${iv.minutes} דקות. הן מתאימות את עצמן: אם משהו קשה מדי, הוא יקטן. אם קל מדי, הוא יגדל.`, tone: 'summary' },
+    {
+      text: `הבוס הראשון: ${boss.name}. נקודות התורפה שלו: ${list(boss.weak.map((r) => REALMS[r].name))}. כל משימה בתחומים האלה פוגעת בו כפול.`,
+      tone: 'summary',
+    },
+    {
+      text: `בכל יום יחכו לך ${n} משימות, בערך ${iv.minutes} דקות. הן מתאימות את עצמן: אם משהו קשה מדי, הוא יקטן. אם קל מדי, הוא יגדל.`,
+      tone: 'summary',
+    },
   ];
   for (const h of iv.hints.slice(0, 2)) if (HINT_LINES[h]) msgs.push({ text: HINT_LINES[h]!, tone: 'summary' });
   msgs.push({ text: 'עוד דבר: מה שסיפרת לי נשמר רק במשחק (במכשיר שלך ובשרת של המשחק) ולא מועבר לאף אחד אחר.' });

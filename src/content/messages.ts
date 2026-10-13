@@ -36,9 +36,7 @@ export const EVE = [
   'הכול סגור? מגיעה לך מנוחה של אלופים.',
 ];
 
-export const DONE_LINES = [
-  'יפה!', 'עוד מכה!', 'בול!', 'מעולה!', 'ככה עושים את זה!', 'ניצחון קטן!', 'אש!', 'הגיבור בתנועה!',
-];
+export const DONE_LINES = ['יפה!', 'עוד מכה!', 'בול!', 'מעולה!', 'ככה עושים את זה!', 'ניצחון קטן!', 'אש!', 'הגיבור בתנועה!'];
 
 export const RETURN_LINES = [
   'ברוכים השבים לממלכה. אין חובות, רק התחלה. הכנתי לך יום קל.',
@@ -46,13 +44,8 @@ export const RETURN_LINES = [
   'כל גיבור נופל לפעמים. האגדות הן על אלה שקמים. נתחיל בקטן.',
 ];
 
-export const LEVEL_LINES = [
-  'עלית דרגה! הממלכה מרגישה את זה.',
-  'כוח חדש זורם בך.',
-  'עוד מדרגה בדרך לאגדה.',
-  'הבוסים מתחילים לחשוש.',
-];
+export const LEVEL_LINES = ['עלית דרגה! הממלכה מרגישה את זה.', 'כוח חדש זורם בך.', 'עוד מדרגה בדרך לאגדה.', 'הבוסים מתחילים לחשוש.'];
 
 export const BOSS_DEFEATED_LINES = ['הבוס הובס!', 'ניצחון!', 'הממלכה חופשית!'];
 
-export const pick = <T,>(arr: readonly T[], n: number): T => arr[((n % arr.length) + arr.length) % arr.length] as T;
+export const pick = <T>(arr: readonly T[], n: number): T => arr[((n % arr.length) + arr.length) % arr.length] as T;

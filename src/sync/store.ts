@@ -77,10 +77,7 @@ export async function openStore(): Promise<KV> {
   let primary: KV | null = null;
   try {
     if (typeof indexedDB !== 'undefined') {
-      const db = await Promise.race([
-        idbOpen(),
-        new Promise<never>((_, rej) => setTimeout(() => rej(new Error('idb timeout')), 3000)),
-      ]);
+      const db = await Promise.race([idbOpen(), new Promise<never>((_, rej) => setTimeout(() => rej(new Error('idb timeout')), 3000))]);
       primary = idbStore(db);
       await primary.get('probe');
     }

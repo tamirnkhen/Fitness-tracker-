@@ -17,8 +17,7 @@ import { normalizeState } from './state';
 export function mergeStates(localRaw: unknown, remoteRaw: unknown): GameState {
   const local = normalizeState(localRaw);
   const remote = normalizeState(remoteRaw);
-  const localWins =
-    local.xp > remote.xp || (local.xp === remote.xp && local.updatedAt >= remote.updatedAt);
+  const localWins = local.xp > remote.xp || (local.xp === remote.xp && local.updatedAt >= remote.updatedAt);
   const base = localWins ? local : remote;
   const other = localWins ? remote : local;
   const out = normalizeState(JSON.parse(JSON.stringify(base)));
