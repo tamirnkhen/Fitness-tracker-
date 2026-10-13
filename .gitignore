@@ -7,3 +7,4 @@ public/fonts/
 public/seg/
 *.log
 .DS_Store
+public/licenses/

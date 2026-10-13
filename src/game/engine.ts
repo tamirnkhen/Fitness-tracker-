@@ -115,6 +115,8 @@ export function checkUnlocks(s: GameState, events: GameEvent[], now: number, ext
     if (t.id === 'wanderer' || known.has(t.id)) continue;
     if (t.test(st)) {
       s.ach['title:' + t.id] = now;
+      // a new title is worn right away; the hero can switch back any time
+      s.title = t.id;
       events.push({ type: 'title', id: t.id });
     }
   }

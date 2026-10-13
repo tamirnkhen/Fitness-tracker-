@@ -15,7 +15,7 @@
     "test:sql": "vitest run tests/sql",
     "test:sql:pg": "node scripts/test-sql-real-pg.mjs",
     "test:e2e": "playwright test",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build && npm run test:e2e",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test && npm run test:sql:pg && npm run build && npm run test:e2e",
     "package": "npm run build && node scripts/package.mjs",
     "serve:e2e": "node tests/e2e/server.mjs"
   },

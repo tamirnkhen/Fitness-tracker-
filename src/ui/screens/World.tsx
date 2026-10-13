@@ -38,7 +38,7 @@ export function WorldScreen() {
                 {T.world.tier}: {TIER_NAMES[a.tier]}
               </div>
               <div class="small muted">
-                <span class="num">{g.realmXp[r]}</span> XP · <span class="num">{g.counters.perRealm[r]}</span> ✓
+                <span class="num">{g.realmXp[r]} XP</span> · {g.counters.perRealm[r]} משימות
               </div>
             </article>
           );

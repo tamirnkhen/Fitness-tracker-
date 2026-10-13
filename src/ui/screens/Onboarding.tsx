@@ -5,7 +5,7 @@ import { app, useApp } from '../../app/store';
 import { finishInterview } from '../../app/actions';
 import { Button } from '../components/common';
 import { IconChevron } from '../components/icons';
-import { CharacterCreator } from '../../character/Creator';
+import { LazyCreator as CharacterCreator } from '../components/LazyCreator';
 
 interface Line {
   id: number;

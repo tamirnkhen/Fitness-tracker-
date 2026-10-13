@@ -22,7 +22,7 @@ import { formatPhone } from '../../game/phone';
 import { Avatar, Button, Sheet, Switch, Thumb } from '../components/common';
 import { IconCopy, IconShare } from '../components/icons';
 import { TermsSheet } from './Auth';
-import { CharacterCreator } from '../../character/Creator';
+import { LazyCreator as CharacterCreator } from '../components/LazyCreator';
 import { googleLink, reminderSpecs, buildIcs } from '../../calendar/calendar';
 
 declare const __APP_VERSION__: string;

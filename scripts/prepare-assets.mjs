@@ -37,6 +37,5 @@ for (const f of [
 const model = path.join(root, 'assets', 'seg', 'selfie_segmenter.tflite');
 if (!existsSync(model)) throw new Error('assets/seg/selfie_segmenter.tflite is missing');
 copyFileSync(model, pub('seg', 'selfie_segmenter.tflite'));
-const lic = nm('@mediapipe', 'tasks-vision', 'LICENSE');
-if (existsSync(lic)) copyFileSync(lic, pub('licenses', 'mediapipe-Apache-2.0.txt'));
+copyFileSync(path.join(root, 'assets', 'licenses', 'mediapipe-NOTICE.txt'), pub('licenses', 'mediapipe-NOTICE.txt'));
 console.log('assets ready');

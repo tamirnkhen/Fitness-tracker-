@@ -9,11 +9,19 @@ import { OnboardingScreen } from './screens/Onboarding';
 import { QuestsScreen } from './screens/Quests';
 import { WorldScreen } from './screens/World';
 import { HeroScreen, JoinSheet } from './screens/Hero';
-import { AdminScreen } from './screens/Admin';
 import { Avatar, Button, XpBar } from './components/common';
 import { Overlays, Toasts } from './components/Overlays';
 import { IconFlame, IconMap, IconShield, IconSword } from './components/icons';
 import { isOutdated } from '../app/version';
+import type { ComponentType } from 'preact';
+
+function LazyAdmin() {
+  const [C, setC] = useState<ComponentType | null>(null);
+  useEffect(() => {
+    void import('./screens/Admin').then((m) => setC(() => m.AdminScreen));
+  }, []);
+  return C ? <C /> : <main class="screen plain" aria-busy="true" />;
+}
 
 function Hud() {
   const g = useApp((s) => s.game!);
@@ -176,7 +184,7 @@ export function App() {
       ) : phase === 'setup' ? (
         <SetupScreen />
       ) : phase === 'admin' ? (
-        <AdminScreen />
+        <LazyAdmin />
       ) : phase === 'auth' ? (
         <AuthScreen />
       ) : phase === 'consent' ? (

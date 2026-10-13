@@ -5,6 +5,7 @@
 import http from 'node:http';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { createDb } from '../support/rpc-db.mjs';
 
@@ -67,7 +68,9 @@ const server = http.createServer(async (req, res) => {
     try {
       const args = body ? JSON.parse(body) : {};
       if (!/^q_[a-z_]+$/.test(fn) || fn.startsWith('q__')) throw Object.assign(new Error('not found'), { status: 404 });
-      const out = await db.rpc(fn, args, { headers: { 'x-forwarded-for': '127.0.0.1' } });
+      // like a gateway: forward the client IP only if one is given (per-IP limits are covered by the SQL tests)
+      const xff = req.headers['x-forwarded-for'];
+      const out = await db.rpc(fn, args, { headers: xff ? { 'x-forwarded-for': String(xff) } : {} });
       res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(out));
     } catch (e) {
       res.writeHead(e.status || 400, { 'Content-Type': 'application/json' }).end(JSON.stringify({ message: String(e.message) }));
@@ -93,7 +96,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   if (!existsSync(p) || statSync(p).isDirectory()) p = path.join(dist, 'index.html');
-  res.writeHead(200, { 'Content-Type': TYPES[path.extname(p)] ?? 'application/octet-stream' });
-  res.end(readFileSync(p));
+  const type = TYPES[path.extname(p)] ?? 'application/octet-stream';
+  let body = readFileSync(p);
+  // Netlify compresses text assets; do the same so performance numbers are realistic
+  if (/text|javascript|json|svg|wasm/.test(type) && /gzip/.test(String(req.headers['accept-encoding']))) {
+    body = gzipSync(body);
+    res.setHeader('Content-Encoding', 'gzip');
+  }
+  res.writeHead(200, { 'Content-Type': type });
+  res.end(body);
 });
 server.listen(port, () => console.log(`e2e server on http://localhost:${port}`));
