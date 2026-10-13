@@ -11,6 +11,7 @@ export interface KV {
   set(k: string, v: unknown): Promise<void>;
   del(k: string): Promise<void>;
   clear(): Promise<void>;
+  close?(): void;
   kind: 'idb' | 'ls' | 'memory';
 }
 
@@ -18,7 +19,11 @@ function idbOpen(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE);
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      // another tab deleting the database (sign-out / delete) must not be blocked
+      req.result.onversionchange = () => req.result.close();
+      resolve(req.result);
+    };
     req.onerror = () => reject(req.error);
     req.onblocked = () => reject(new Error('blocked'));
   });
@@ -39,6 +44,7 @@ function idbStore(db: IDBDatabase): KV {
     set: (k, v) => tx<void>('readwrite', (s) => s.put(v, k)),
     del: (k) => tx<void>('readwrite', (s) => s.delete(k)),
     clear: () => tx<void>('readwrite', (s) => s.clear()),
+    close: () => db.close(),
   };
 }
 
@@ -132,6 +138,7 @@ export async function openStore(): Promise<KV> {
       await p.clear().catch(() => {});
       await l.clear().catch(() => {});
     },
+    close: () => p.close?.(),
   };
 }
 
@@ -149,7 +156,14 @@ export async function wipeDevice(store: KV | null): Promise<void> {
     /* ignore */
   }
   try {
-    if (typeof indexedDB !== 'undefined') indexedDB.deleteDatabase(DB);
+    store?.close?.();
+    if (typeof indexedDB !== 'undefined') {
+      await new Promise<void>((res) => {
+        const r = indexedDB.deleteDatabase(DB);
+        r.onsuccess = r.onerror = r.onblocked = () => res();
+        setTimeout(res, 2000);
+      });
+    }
   } catch {
     /* ignore */
   }

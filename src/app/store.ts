@@ -91,7 +91,7 @@ export const app = {
     }
     if (!changed) return;
     state = { ...state, ...p };
-    for (const l of listeners) l();
+    for (const l of [...listeners]) l();
   },
   subscribe(l: Listener) {
     listeners.add(l);
@@ -108,7 +108,13 @@ export function useApp<T>(sel: (s: AppState) => T): T {
   const [v, setV] = useState(() => sel(state));
   useEffect(() => {
     const check = () => {
-      const n = sel(state);
+      let n: T;
+      try {
+        n = sel(state);
+      } catch {
+        // the component is about to unmount (e.g. game cleared on sign-out)
+        return;
+      }
       setV((old) => (Object.is(old, n) ? old : n));
     };
     check();

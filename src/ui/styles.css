@@ -158,7 +158,8 @@ a {
 
 .screen {
   padding: calc(12px + var(--safe-t)) 16px calc(var(--nav-h) + 28px + var(--safe-b));
-  animation: fadeUp 0.35s ease both;
+  /* no fill-mode: once done, no stacking context, so sheets/overlays inside sit above the nav */
+  animation: fade 0.3s ease;
 }
 .screen.plain {
   padding-bottom: calc(28px + var(--safe-b));
@@ -653,8 +654,11 @@ textarea.input {
   opacity: 0.85;
 }
 .quest.done {
-  opacity: 0.66;
   border-color: rgba(95, 211, 162, 0.35);
+  background: linear-gradient(180deg, #151230, #100d24);
+}
+.quest.done .qtitle {
+  color: var(--muted);
 }
 .quest.done .qtitle {
   text-decoration: line-through;

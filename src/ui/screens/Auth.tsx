@@ -170,7 +170,7 @@ export function AuthScreen() {
               name="username"
               type="tel"
               inputMode="tel"
-              autocomplete="username tel"
+              autocomplete="username"
               placeholder={T.auth.phoneHint}
               required
               value={phone}

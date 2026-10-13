@@ -120,10 +120,9 @@ export async function play(name: SfxName): Promise<void> {
 
 /** Pre-render in idle time so the first level-up plays instantly. */
 export function warmUp() {
-  const idle =
-    (window as unknown as { requestIdleCallback?: (f: () => void) => void }).requestIdleCallback ??
-    ((f: () => void) => setTimeout(f, 1500));
-  idle(() => {
+  const run = () => {
     for (const n of ['tick', 'levelUp', 'boss'] as SfxName[]) element(n);
-  });
+  };
+  if ('requestIdleCallback' in window) window.requestIdleCallback(run);
+  else setTimeout(run, 1500);
 }

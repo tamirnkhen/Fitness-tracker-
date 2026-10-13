@@ -44,7 +44,7 @@ export function registerSW() {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(
       (reg) => {
-        reg.addEventListener('updatefound', () => {
+        reg?.addEventListener('updatefound', () => {
           const w = reg.installing;
           w?.addEventListener('statechange', () => {
             if (w.state === 'installed' && navigator.serviceWorker.controller) app.set({ updateReady: true });
